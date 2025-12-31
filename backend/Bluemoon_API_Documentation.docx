@@ -1,0 +1,389 @@
+# Bluemoon API Documentation
+
+## 1. User APIs
+
+### API: /api/users (GET)
+- Mô tả: Lấy danh sách tất cả người dùng
+- Request: GET
+- Input: Không có
+- Kết quả: 200|OK, trả về danh sách UserDTO
+- Chi tiết input/output: Không có input, output là List<UserDTO>
+
+### API: /api/users/{id} (GET)
+- Mô tả: Lấy thông tin người dùng theo ID
+- Request: GET
+- Input:
+  - id (O): ID người dùng
+- Kết quả: 200|OK, trả về UserDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+
+### API: /api/users/username/{username} (GET)
+- Mô tả: Lấy thông tin người dùng theo username
+- Request: GET
+- Input:
+  - username (O): Tên đăng nhập
+- Kết quả: 200|OK, trả về UserDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - username: O
+
+### API: /api/users/exists/{username} (GET)
+- Mô tả: Kiểm tra username đã tồn tại chưa
+- Request: GET
+- Input:
+  - username (O): Tên đăng nhập
+- Kết quả: 200|OK, trả về true/false
+- Chi tiết input/output:
+  - username: O
+
+### API: /api/users (POST)
+- Mô tả: Tạo mới người dùng
+- Request: POST
+- Input:
+  - UserRequestDTO (O): Thông tin người dùng
+- Kết quả: 201|Created, trả về UserDTO hoặc 400 nếu lỗi
+- Chi tiết input/output:
+  - UserRequestDTO: O
+
+### API: /api/users/{id} (PUT)
+- Mô tả: Cập nhật thông tin người dùng
+- Request: PUT
+- Input:
+  - id (O): ID người dùng
+  - UserRequestDTO (O): Thông tin cập nhật
+- Kết quả: 200|OK, trả về UserDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+  - UserRequestDTO: O
+
+### API: /api/users/{id} (DELETE)
+- Mô tả: Xóa người dùng
+- Request: DELETE
+- Input:
+  - id (O): ID người dùng
+- Kết quả: 204|No Content hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+
+### API: /api/users/check-password (POST)
+- Mô tả: Kiểm tra mật khẩu người dùng
+- Request: POST
+- Input:
+  - username (O): Tên đăng nhập
+  - password (O): Mật khẩu
+- Kết quả: 200|OK, trả về true/false
+- Chi tiết input/output:
+  - username: O
+  - password: O
+
+## 2. Nộp Tiền APIs
+
+### API: /api/noptien (GET)
+- Mô tả: Lấy danh sách tất cả các khoản nộp tiền
+- Request: GET
+- Input: Không có
+- Kết quả: 200|OK, trả về danh sách NopTienDTO
+- Chi tiết input/output: Không có input, output là List<NopTienDTO>
+
+### API: /api/noptien/{id} (GET)
+- Mô tả: Lấy thông tin nộp tiền theo ID
+- Request: GET
+- Input:
+  - id (O): ID nộp tiền
+- Kết quả: 200|OK, trả về NopTienDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+
+### API: /api/noptien/hokhau/{hoKhauId} (GET)
+- Mô tả: Lấy danh sách nộp tiền theo hộ khẩu
+- Request: GET
+- Input:
+  - hoKhauId (O): ID hộ khẩu
+- Kết quả: 200|OK, trả về List<NopTienDTO>
+- Chi tiết input/output:
+  - hoKhauId: O
+
+### API: /api/noptien/khoanthu/{khoanThuId} (GET)
+- Mô tả: Lấy danh sách nộp tiền theo khoản thu
+- Request: GET
+- Input:
+  - khoanThuId (O): ID khoản thu
+- Kết quả: 200|OK, trả về List<NopTienDTO>
+- Chi tiết input/output:
+  - khoanThuId: O
+
+### API: /api/noptien/daterange (GET)
+- Mô tả: Lấy danh sách nộp tiền theo khoảng thời gian
+- Request: GET
+- Input:
+  - startDate (O): Ngày bắt đầu (ISO_DATE_TIME)
+  - endDate (O): Ngày kết thúc (ISO_DATE_TIME)
+- Kết quả: 200|OK, trả về List<NopTienDTO>
+- Chi tiết input/output:
+  - startDate: O
+  - endDate: O
+
+### API: /api/noptien/thongke/khoanthu/{khoanThuId} (GET)
+- Mô tả: Thống kê tổng tiền theo khoản thu
+- Request: GET
+- Input:
+  - khoanThuId (O): ID khoản thu
+- Kết quả: 200|OK, trả về BigDecimal
+- Chi tiết input/output:
+  - khoanThuId: O
+
+### API: /api/noptien/thongke/daterange (GET)
+- Mô tả: Thống kê tổng tiền theo khoảng thời gian
+- Request: GET
+- Input:
+  - startDate (O): Ngày bắt đầu (ISO_DATE_TIME)
+  - endDate (O): Ngày kết thúc (ISO_DATE_TIME)
+- Kết quả: 200|OK, trả về BigDecimal
+- Chi tiết input/output:
+  - startDate: O
+  - endDate: O
+
+### API: /api/noptien (POST)
+- Mô tả: Tạo mới khoản nộp tiền
+- Request: POST
+- Input:
+  - NopTienRequestDTO (O): Thông tin nộp tiền
+- Kết quả: 201|Created, trả về NopTienDTO hoặc 400 nếu lỗi
+- Chi tiết input/output:
+  - NopTienRequestDTO: O
+
+### API: /api/noptien/{id} (PUT)
+- Mô tả: Cập nhật khoản nộp tiền
+- Request: PUT
+- Input:
+  - id (O): ID nộp tiền
+  - NopTienRequestDTO (O): Thông tin cập nhật
+- Kết quả: 200|OK, trả về NopTienDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+  - NopTienRequestDTO: O
+
+### API: /api/noptien/{id} (DELETE)
+- Mô tả: Xóa khoản nộp tiền
+- Request: DELETE
+- Input:
+  - id (O): ID nộp tiền
+- Kết quả: 204|No Content hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+
+## 3. Nhân Khẩu APIs
+
+### API: /api/nhankhau (GET)
+- Mô tả: Lấy danh sách tất cả nhân khẩu
+- Request: GET
+- Input: Không có
+- Kết quả: 200|OK, trả về List<NhanKhauDTO>
+- Chi tiết input/output: Không có input, output là List<NhanKhauDTO>
+
+### API: /api/nhankhau/{id} (GET)
+- Mô tả: Lấy thông tin nhân khẩu theo ID
+- Request: GET
+- Input:
+  - id (O): ID nhân khẩu
+- Kết quả: 200|OK, trả về NhanKhauDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+
+### API: /api/nhankhau/hokhau/{hoKhauId} (GET)
+- Mô tả: Lấy danh sách nhân khẩu theo hộ khẩu
+- Request: GET
+- Input:
+  - hoKhauId (O): ID hộ khẩu
+- Kết quả: 200|OK, trả về List<NhanKhauDTO>
+- Chi tiết input/output:
+  - hoKhauId: O
+
+### API: /api/nhankhau/search (GET)
+- Mô tả: Tìm kiếm nhân khẩu theo họ tên
+- Request: GET
+- Input:
+  - keyword (O): Từ khóa họ tên
+- Kết quả: 200|OK, trả về List<NhanKhauDTO>
+- Chi tiết input/output:
+  - keyword: O
+
+### API: /api/nhankhau/cmnd/{cmndCccd} (GET)
+- Mô tả: Lấy nhân khẩu theo số CMND/CCCD
+- Request: GET
+- Input:
+  - cmndCccd (O): Số CMND/CCCD
+- Kết quả: 200|OK, trả về NhanKhauDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - cmndCccd: O
+
+### API: /api/nhankhau (POST)
+- Mô tả: Tạo mới nhân khẩu
+- Request: POST
+- Input:
+  - NhanKhauRequestDTO (O): Thông tin nhân khẩu
+- Kết quả: 201|Created, trả về NhanKhauDTO hoặc 400 nếu lỗi
+- Chi tiết input/output:
+  - NhanKhauRequestDTO: O
+
+### API: /api/nhankhau/{id} (PUT)
+- Mô tả: Cập nhật nhân khẩu
+- Request: PUT
+- Input:
+  - id (O): ID nhân khẩu
+  - NhanKhauRequestDTO (O): Thông tin cập nhật
+- Kết quả: 200|OK, trả về NhanKhauDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+  - NhanKhauRequestDTO: O
+
+### API: /api/nhankhau/{id} (DELETE)
+- Mô tả: Xóa nhân khẩu
+- Request: DELETE
+- Input:
+  - id (O): ID nhân khẩu
+- Kết quả: 204|No Content hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+
+## 4. Khoản Thu APIs
+
+### API: /api/khoanthu (GET)
+- Mô tả: Lấy danh sách tất cả khoản thu
+- Request: GET
+- Input: Không có
+- Kết quả: 200|OK, trả về List<KhoanThuDTO>
+- Chi tiết input/output: Không có input, output là List<KhoanThuDTO>
+
+### API: /api/khoanthu/{id} (GET)
+- Mô tả: Lấy thông tin khoản thu theo ID
+- Request: GET
+- Input:
+  - id (O): ID khoản thu
+- Kết quả: 200|OK, trả về KhoanThuDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+
+### API: /api/khoanthu/batbuoc (GET)
+- Mô tả: Lấy danh sách khoản thu bắt buộc
+- Request: GET
+- Input: Không có
+- Kết quả: 200|OK, trả về List<KhoanThuDTO>
+- Chi tiết input/output: Không có input, output là List<KhoanThuDTO>
+
+### API: /api/khoanthu/tunguyen (GET)
+- Mô tả: Lấy danh sách khoản thu tự nguyện
+- Request: GET
+- Input: Không có
+- Kết quả: 200|OK, trả về List<KhoanThuDTO>
+- Chi tiết input/output: Không có input, output là List<KhoanThuDTO>
+
+### API: /api/khoanthu/active (GET)
+- Mô tả: Lấy danh sách khoản thu đang hoạt động tại ngày chỉ định
+- Request: GET
+- Input:
+  - ngay (X): Ngày tìm kiếm (ISO_DATE), mặc định là ngày hiện tại nếu không truyền
+- Kết quả: 200|OK, trả về List<KhoanThuDTO>
+- Chi tiết input/output:
+  - ngay: X
+
+### API: /api/khoanthu (POST)
+- Mô tả: Tạo mới khoản thu
+- Request: POST
+- Input:
+  - KhoanThuRequestDTO (O): Thông tin khoản thu
+- Kết quả: 201|Created, trả về KhoanThuDTO hoặc 400 nếu lỗi
+- Chi tiết input/output:
+  - KhoanThuRequestDTO: O
+
+### API: /api/khoanthu/{id} (PUT)
+- Mô tả: Cập nhật khoản thu
+- Request: PUT
+- Input:
+  - id (O): ID khoản thu
+  - KhoanThuRequestDTO (O): Thông tin cập nhật
+- Kết quả: 200|OK, trả về KhoanThuDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+  - KhoanThuRequestDTO: O
+
+### API: /api/khoanthu/{id} (DELETE)
+- Mô tả: Xóa khoản thu
+- Request: DELETE
+- Input:
+  - id (O): ID khoản thu
+- Kết quả: 204|No Content hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+
+## 5. Hộ Khẩu APIs
+
+### API: /api/hokhau (GET)
+- Mô tả: Lấy danh sách tất cả hộ khẩu
+- Request: GET
+- Input: Không có
+- Kết quả: 200|OK, trả về List<HoKhauDTO>
+- Chi tiết input/output: Không có input, output là List<HoKhauDTO>
+
+### API: /api/hokhau/{id} (GET)
+- Mô tả: Lấy thông tin hộ khẩu theo ID
+- Request: GET
+- Input:
+  - id (O): ID hộ khẩu
+- Kết quả: 200|OK, trả về HoKhauDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+
+### API: /api/hokhau/active (GET)
+- Mô tả: Lấy danh sách hộ khẩu đang hoạt động
+- Request: GET
+- Input: Không có
+- Kết quả: 200|OK, trả về List<HoKhauDTO>
+- Chi tiết input/output: Không có input, output là List<HoKhauDTO>
+
+### API: /api/hokhau/search/chuho (GET)
+- Mô tả: Tìm kiếm hộ khẩu theo tên chủ hộ
+- Request: GET
+- Input:
+  - keyword (O): Từ khóa tên chủ hộ
+- Kết quả: 200|OK, trả về List<HoKhauDTO>
+- Chi tiết input/output:
+  - keyword: O
+
+### API: /api/hokhau/search/diachi (GET)
+- Mô tả: Tìm kiếm hộ khẩu theo địa chỉ
+- Request: GET
+- Input:
+  - keyword (O): Từ khóa địa chỉ
+- Kết quả: 200|OK, trả về List<HoKhauDTO>
+- Chi tiết input/output:
+  - keyword: O
+
+### API: /api/hokhau (POST)
+- Mô tả: Tạo mới hộ khẩu
+- Request: POST
+- Input:
+  - HoKhauRequestDTO (O): Thông tin hộ khẩu
+- Kết quả: 201|Created, trả về HoKhauDTO hoặc 400 nếu lỗi
+- Chi tiết input/output:
+  - HoKhauRequestDTO: O
+
+### API: /api/hokhau/{id} (PUT)
+- Mô tả: Cập nhật hộ khẩu
+- Request: PUT
+- Input:
+  - id (O): ID hộ khẩu
+  - HoKhauRequestDTO (O): Thông tin cập nhật
+- Kết quả: 200|OK, trả về HoKhauDTO hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O
+  - HoKhauRequestDTO: O
+
+### API: /api/hokhau/{id} (DELETE)
+- Mô tả: Xóa hộ khẩu
+- Request: DELETE
+- Input:
+  - id (O): ID hộ khẩu
+- Kết quả: 204|No Content hoặc 404 nếu không tìm thấy
+- Chi tiết input/output:
+  - id: O

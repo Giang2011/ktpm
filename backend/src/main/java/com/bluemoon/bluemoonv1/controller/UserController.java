@@ -87,4 +87,24 @@ public class UserController {
         boolean isValid = userService.checkPassword(username, password);
         return ResponseEntity.ok(isValid);
     }
+    
+    /**
+     * Đăng nhập với username và password
+     * Trả về thông tin đầy đủ của tài khoản (bao gồm role) nếu đăng nhập thành công
+     * Không bao gồm password trong response
+     * 
+     * @param username Tên đăng nhập
+     * @param password Mật khẩu
+     * @return Thông tin tài khoản nếu đăng nhập thành công
+     */
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
+        try {
+            UserDTO user = userService.login(username, password);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
+        }
+    }
 }

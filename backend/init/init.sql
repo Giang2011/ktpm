@@ -62,6 +62,32 @@ CREATE TABLE nop_tien (
     FOREIGN KEY (ho_khau_id) REFERENCES ho_khau(id)
 );
 
+-- 7. Bảng Audit Log: Lưu lịch sử thao tác CRUD
+-- Dùng để frontend truy vấn lại lịch sử chỉnh sửa / xóa / tạo dữ liệu
+CREATE TABLE audit_logs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    actor VARCHAR(50) NOT NULL, 
+    -- ADMIN hoặc ACCOUNTANT (lấy từ Spring Security)
+
+    action VARCHAR(20) NOT NULL, 
+    -- CREATE | UPDATE | DELETE
+
+    entity_name VARCHAR(50) NOT NULL, 
+    -- ho_khau | nhan_khau | khoan_thu | nop_tien
+
+    entity_id BIGINT NOT NULL, 
+    -- id của bản ghi bị tác động
+
+    old_data JSON NULL, 
+    -- dữ liệu trước khi sửa/xóa
+
+    new_data JSON NULL, 
+    -- dữ liệu sau khi tạo/sửa
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Insert dữ liệu mẫu (Seeding data) để bạn test API
 -- INSERT INTO users (username, password, role) VALUES 
 -- ('admin', '123456', 'ADMIN'); -- Lưu ý: Khi làm thật password phải hash

@@ -22,4 +22,13 @@ public interface UserService {
     boolean existsByUsername(String username);
     
     boolean checkPassword(String username, String password);
+    
+    /**
+     * Đăng nhập với username và password
+     * @param username Tên đăng nhập
+     * @param password Mật khẩu
+     * @return Thông tin user (không bao gồm password) nếu đăng nhập thành công
+     * @throws RuntimeException nếu username không tồn tại hoặc mật khẩu sai
+     */
+    UserDTO login(String username, String password);
 }

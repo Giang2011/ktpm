@@ -1,10 +1,9 @@
 package com.bluemoon.bluemoonv1.service.impl;
 
-import com.bluemoon.bluemoonv1.dto.KhoanThuDTO;
-import com.bluemoon.bluemoonv1.dto.KhoanThuRequestDTO;
-import com.bluemoon.bluemoonv1.entity.KhoanThu;
-import com.bluemoon.bluemoonv1.repository.KhoanThuRepository;
-import com.bluemoon.bluemoonv1.repository.NopTienRepository;
+import com.bluemoon.bluemoonv1.annotation.AuditLog;
+import com.bluemoon.bluemoonv1.dto.*;
+import com.bluemoon.bluemoonv1.entity.*;
+import com.bluemoon.bluemoonv1.repository.*;
 import com.bluemoon.bluemoonv1.service.KhoanThuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +22,8 @@ public class KhoanThuServiceImpl implements KhoanThuService {
     
     private final KhoanThuRepository khoanThuRepository;
     private final NopTienRepository nopTienRepository;
+    private final HoKhauRepository hoKhauRepository;
+    private final NhanKhauRepository nhanKhauRepository;
     
     @Override
     @Transactional(readOnly = true)
@@ -64,6 +66,7 @@ public class KhoanThuServiceImpl implements KhoanThuService {
     }
     
     @Override
+    @AuditLog(tableName = "khoan_thu", action = AuditAction.CREATE)
     public KhoanThuDTO createKhoanThu(KhoanThuRequestDTO requestDTO) {
         KhoanThu khoanThu = new KhoanThu();
         khoanThu.setTenKhoanThu(requestDTO.getTenKhoanThu());
@@ -78,6 +81,7 @@ public class KhoanThuServiceImpl implements KhoanThuService {
     }
     
     @Override
+    @AuditLog(tableName = "khoan_thu", action = AuditAction.UPDATE)
     public KhoanThuDTO updateKhoanThu(Long id, KhoanThuRequestDTO requestDTO) {
         KhoanThu khoanThu = khoanThuRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Khoản thu not found with id: " + id));
@@ -94,11 +98,106 @@ public class KhoanThuServiceImpl implements KhoanThuService {
     }
     
     @Override
+    @AuditLog(tableName = "khoan_thu", action = AuditAction.DELETE)
     public void deleteKhoanThu(Long id) {
-        if (!khoanThuRepository.existsById(id)) {
-            throw new RuntimeException("Khoản thu not found with id: " + id);
-        }
+        KhoanThu khoanThu = khoanThuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Khoản thu not found with id: " + id));
+        
         khoanThuRepository.deleteById(id);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public KhoanThuDetailDTO getKhoanThuChiTiet(Long khoanThuId) {
+        // Lấy thông tin khoản thu
+        KhoanThuDTO khoanThu = getKhoanThuById(khoanThuId);
+        
+        // Lấy danh sách hộ đã đóng
+        List<HoKhauDTO> hoDaDong = getHoDaDongByKhoanThuId(khoanThuId);
+        
+        // Lấy danh sách hộ chưa đóng (chỉ với khoản bắt buộc)
+        List<HoKhauDTO> hoChuaDong = getHoChuaDongByKhoanThuId(khoanThuId);
+        
+        // Lấy tổng tiền đã thu
+        BigDecimal tongTien = getTongThuByKhoanThuId(khoanThuId);
+        
+        return KhoanThuDetailDTO.builder()
+                .khoanThu(khoanThu)
+                .hoDaDong(hoDaDong)
+                .hoChuaDong(hoChuaDong)
+                .tongTienDaThu(tongTien)
+                .soHoDaDong(hoDaDong.size())
+                .soHoChuaDong(hoChuaDong != null ? hoChuaDong.size() : null)
+                .build();
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<HoKhauDTO> getHoDaDongByKhoanThuId(Long khoanThuId) {
+        // Lấy danh sách NopTien theo khoanThuId
+        List<NopTien> nopTienList = nopTienRepository.findByKhoanThuId(khoanThuId);
+        
+        // Lấy danh sách hoKhauId đã đóng (distinct)
+        Set<Long> hoKhauIds = nopTienList.stream()
+                .map(nt -> nt.getHoKhau().getId())
+                .collect(Collectors.toSet());
+        
+        // Lấy thông tin chi tiết các hộ khẩu
+        return hoKhauIds.stream()
+                .map(hoKhauRepository::findById)
+                .filter(opt -> opt.isPresent())
+                .map(opt -> convertHoKhauToDTO(opt.get()))
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<HoKhauDTO> getHoChuaDongByKhoanThuId(Long khoanThuId) {
+        // Kiểm tra xem khoản thu có phải là bắt buộc không
+        KhoanThu khoanThu = khoanThuRepository.findById(khoanThuId)
+                .orElseThrow(() -> new RuntimeException("Khoản thu not found with id: " + khoanThuId));
+        
+        // Chỉ áp dụng cho khoản bắt buộc (loaiKhoanThu = 0)
+        if (khoanThu.getLoaiKhoanThu() != 0) {
+            return null; // Không áp dụng cho khoản tự nguyện
+        }
+        
+        // Lấy tất cả hộ khẩu active
+        List<HoKhau> allHoKhau = hoKhauRepository.findAllActive();
+        
+        // Lấy danh sách hộ đã đóng
+        List<NopTien> daDong = nopTienRepository.findByKhoanThuId(khoanThuId);
+        Set<Long> hoDaDongIds = daDong.stream()
+                .map(nt -> nt.getHoKhau().getId())
+                .collect(Collectors.toSet());
+        
+        // Lọc ra các hộ chưa đóng
+        return allHoKhau.stream()
+                .filter(hk -> !hoDaDongIds.contains(hk.getId()))
+                .map(this::convertHoKhauToDTO)
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getTongThuByKhoanThuId(Long khoanThuId) {
+        BigDecimal tongThu = nopTienRepository.sumByKhoanThuId(khoanThuId);
+        return tongThu != null ? tongThu : BigDecimal.ZERO;
+    }
+    
+    private HoKhauDTO convertHoKhauToDTO(HoKhau hoKhau) {
+        HoKhauDTO dto = new HoKhauDTO();
+        dto.setId(hoKhau.getId());
+        dto.setTenChuHo(hoKhau.getTenChuHo());
+        dto.setDiaChi(hoKhau.getDiaChi());
+        dto.setNgayTao(hoKhau.getNgayTao());
+        dto.setTrangThai(hoKhau.getTrangThai());
+        
+        // Đếm số nhân khẩu trong hộ
+        Long soNhanKhau = nhanKhauRepository.countByHoKhauId(hoKhau.getId());
+        dto.setSoNhanKhau(soNhanKhau.intValue());
+        
+        return dto;
     }
     
     private KhoanThuDTO convertToDTO(KhoanThu khoanThu) {

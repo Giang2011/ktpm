@@ -1,7 +1,9 @@
 package com.bluemoon.bluemoonv1.service.impl;
 
+import com.bluemoon.bluemoonv1.annotation.AuditLog;
 import com.bluemoon.bluemoonv1.dto.NhanKhauDTO;
 import com.bluemoon.bluemoonv1.dto.NhanKhauRequestDTO;
+import com.bluemoon.bluemoonv1.entity.AuditAction;
 import com.bluemoon.bluemoonv1.entity.HoKhau;
 import com.bluemoon.bluemoonv1.entity.NhanKhau;
 import com.bluemoon.bluemoonv1.repository.HoKhauRepository;
@@ -63,6 +65,7 @@ public class NhanKhauServiceImpl implements NhanKhauService {
     }
     
     @Override
+    @AuditLog(tableName = "nhan_khau", action = AuditAction.CREATE)
     public NhanKhauDTO createNhanKhau(NhanKhauRequestDTO requestDTO) {
         HoKhau hoKhau = hoKhauRepository.findById(requestDTO.getHoKhauId())
                 .orElseThrow(() -> new RuntimeException("Hộ khẩu not found with id: " + requestDTO.getHoKhauId()));
@@ -81,6 +84,7 @@ public class NhanKhauServiceImpl implements NhanKhauService {
     }
     
     @Override
+    @AuditLog(tableName = "nhan_khau", action = AuditAction.UPDATE)
     public NhanKhauDTO updateNhanKhau(Long id, NhanKhauRequestDTO requestDTO) {
         NhanKhau nhanKhau = nhanKhauRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nhân khẩu not found with id: " + id));
@@ -103,10 +107,11 @@ public class NhanKhauServiceImpl implements NhanKhauService {
     }
     
     @Override
+    @AuditLog(tableName = "nhan_khau", action = AuditAction.DELETE)
     public void deleteNhanKhau(Long id) {
-        if (!nhanKhauRepository.existsById(id)) {
-            throw new RuntimeException("Nhân khẩu not found with id: " + id);
-        }
+        NhanKhau nhanKhau = nhanKhauRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nhân khẩu not found with id: " + id));
+        
         nhanKhauRepository.deleteById(id);
     }
     

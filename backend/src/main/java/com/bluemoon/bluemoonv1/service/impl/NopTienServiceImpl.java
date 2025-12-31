@@ -1,7 +1,9 @@
 package com.bluemoon.bluemoonv1.service.impl;
 
+import com.bluemoon.bluemoonv1.annotation.AuditLog;
 import com.bluemoon.bluemoonv1.dto.NopTienDTO;
 import com.bluemoon.bluemoonv1.dto.NopTienRequestDTO;
+import com.bluemoon.bluemoonv1.entity.AuditAction;
 import com.bluemoon.bluemoonv1.entity.HoKhau;
 import com.bluemoon.bluemoonv1.entity.KhoanThu;
 import com.bluemoon.bluemoonv1.entity.NopTien;
@@ -82,6 +84,7 @@ public class NopTienServiceImpl implements NopTienService {
     }
     
     @Override
+    @AuditLog(tableName = "nop_tien", action = AuditAction.CREATE)
     public NopTienDTO createNopTien(NopTienRequestDTO requestDTO) {
         KhoanThu khoanThu = khoanThuRepository.findById(requestDTO.getKhoanThuId())
                 .orElseThrow(() -> new RuntimeException("Khoản thu not found with id: " + requestDTO.getKhoanThuId()));
@@ -101,6 +104,7 @@ public class NopTienServiceImpl implements NopTienService {
     }
     
     @Override
+    @AuditLog(tableName = "nop_tien", action = AuditAction.UPDATE)
     public NopTienDTO updateNopTien(Long id, NopTienRequestDTO requestDTO) {
         NopTien nopTien = nopTienRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nộp tiền not found with id: " + id));
@@ -126,10 +130,11 @@ public class NopTienServiceImpl implements NopTienService {
     }
     
     @Override
+    @AuditLog(tableName = "nop_tien", action = AuditAction.DELETE)
     public void deleteNopTien(Long id) {
-        if (!nopTienRepository.existsById(id)) {
-            throw new RuntimeException("Nộp tiền not found with id: " + id);
-        }
+        NopTien nopTien = nopTienRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nộp tiền not found with id: " + id));
+        
         nopTienRepository.deleteById(id);
     }
     

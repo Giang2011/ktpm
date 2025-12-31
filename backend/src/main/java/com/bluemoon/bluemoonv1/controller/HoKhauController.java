@@ -1,7 +1,6 @@
 package com.bluemoon.bluemoonv1.controller;
 
-import com.bluemoon.bluemoonv1.dto.HoKhauDTO;
-import com.bluemoon.bluemoonv1.dto.HoKhauRequestDTO;
+import com.bluemoon.bluemoonv1.dto.*;
 import com.bluemoon.bluemoonv1.service.HoKhauService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -79,6 +78,73 @@ public class HoKhauController {
         try {
             hoKhauService.deleteHoKhau(id);
             return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    // ========== Các endpoint mới cho chi tiết hộ khẩu ==========
+    
+    /**
+     * Lấy thông tin chi tiết đầy đủ của hộ khẩu
+     * Bao gồm: thông tin hộ, danh sách thành viên, khoản đã đóng, khoản chưa đóng
+     * 
+     * @param id ID của hộ khẩu
+     * @return Thông tin chi tiết đầy đủ
+     */
+    @GetMapping("/{id}/chi-tiet")
+    public ResponseEntity<HoKhauDetailDTO> getHoKhauChiTiet(@PathVariable Long id) {
+        try {
+            HoKhauDetailDTO chiTiet = hoKhauService.getHoKhauChiTiet(id);
+            return ResponseEntity.ok(chiTiet);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    /**
+     * Lấy danh sách thành viên của hộ khẩu
+     * 
+     * @param id ID của hộ khẩu
+     * @return Danh sách nhân khẩu trong hộ với thông tin chi tiết
+     */
+    @GetMapping("/{id}/thanh-vien")
+    public ResponseEntity<List<NhanKhauDTO>> getThanhVien(@PathVariable Long id) {
+        try {
+            List<NhanKhauDTO> thanhVien = hoKhauService.getThanhVienByHoKhauId(id);
+            return ResponseEntity.ok(thanhVien);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    /**
+     * Lấy danh sách các khoản thu đã đóng
+     * 
+     * @param id ID của hộ khẩu
+     * @return Danh sách các khoản đã nộp tiền
+     */
+    @GetMapping("/{id}/khoan-da-dong")
+    public ResponseEntity<List<NopTienDTO>> getKhoanDaDong(@PathVariable Long id) {
+        try {
+            List<NopTienDTO> khoanDaDong = hoKhauService.getKhoanDaDong(id);
+            return ResponseEntity.ok(khoanDaDong);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    /**
+     * Lấy danh sách các khoản thu bắt buộc chưa đóng
+     * 
+     * @param id ID của hộ khẩu
+     * @return Danh sách các khoản bắt buộc chưa nộp tiền
+     */
+    @GetMapping("/{id}/khoan-chua-dong")
+    public ResponseEntity<List<KhoanThuDTO>> getKhoanChuaDong(@PathVariable Long id) {
+        try {
+            List<KhoanThuDTO> khoanChuaDong = hoKhauService.getKhoanChuaDong(id);
+            return ResponseEntity.ok(khoanChuaDong);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

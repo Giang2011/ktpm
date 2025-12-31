@@ -112,6 +112,21 @@ public class UserServiceImpl implements UserService {
         }
     }
     
+    @Override
+    @Transactional(readOnly = true)
+    public UserDTO login(String username, String password) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại"));
+        
+        // Kiểm tra mật khẩu
+        if (!user.getPassword().equals(password)) {
+            throw new RuntimeException("Mật khẩu không chính xác");
+        }
+        
+        // Trả về thông tin user (không bao gồm password)
+        return convertToDTO(user);
+    }
+    
     private UserDTO convertToDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
