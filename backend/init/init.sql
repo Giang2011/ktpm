@@ -88,9 +88,9 @@ CREATE TABLE audit_logs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert dữ liệu mẫu (Seeding data) để bạn test API
--- INSERT INTO users (username, password, role) VALUES 
--- ('admin', '123456', 'ADMIN'); -- Lưu ý: Khi làm thật password phải hash
+--Insert dữ liệu mẫu (Seeding data) để bạn test API
+INSERT INTO users (username, password, role) VALUES 
+('admin', '123456', 'ADMIN'); -- Lưu ý: Khi làm thật password phải hash
 
 -- INSERT INTO ho_khau (ma_ho_khau, ten_chu_ho, dia_chi) VALUES 
 -- ('HK01', 'Nguyễn Văn A', 'Phòng 101, Tầng 1'),
