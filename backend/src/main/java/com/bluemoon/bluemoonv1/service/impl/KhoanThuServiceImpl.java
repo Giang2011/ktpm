@@ -6,6 +6,10 @@ import com.bluemoon.bluemoonv1.entity.*;
 import com.bluemoon.bluemoonv1.repository.*;
 import com.bluemoon.bluemoonv1.service.KhoanThuService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +35,81 @@ public class KhoanThuServiceImpl implements KhoanThuService {
         return khoanThuRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public Page<KhoanThuDTO> getKhoanThuPaged(int page, int size, String sortBy, String sortDir,
+                                               Integer loaiKhoanThu, Boolean conHanNop, String searchTerm) {
+        // Tạo Sort
+        Sort sort = sortDir.equalsIgnoreCase("desc") 
+            ? Sort.by(sortBy).descending() 
+            : Sort.by(sortBy).ascending();
+        
+        // Tạo Pageable
+        Pageable pageable = PageRequest.of(page, size, sort);
+        
+        // Lấy tất cả khoản thu
+        List<KhoanThu> allKhoanThu = khoanThuRepository.findAll(Sort.by(Sort.Order.by(sortBy)));
+        
+        // Áp dụng filter
+        LocalDate today = LocalDate.now();
+        List<KhoanThu> filteredList = allKhoanThu.stream()
+            .filter(khoanThu -> {
+                // Filter loaiKhoanThu
+                if (loaiKhoanThu != null && !khoanThu.getLoaiKhoanThu().equals(loaiKhoanThu)) {
+                    return false;
+                }
+                
+                // Filter conHanNop (còn thời hạn nộp)
+                if (conHanNop != null && conHanNop) {
+                    // Còn hạn nộp nếu: ngayKetThuc == null HOẶC ngayKetThuc >= today
+                    if (khoanThu.getNgayKetThuc() != null && khoanThu.getNgayKetThuc().isBefore(today)) {
+                        return false;
+                    }
+                }
+                
+                // Filter search term
+                if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                    String lowerSearchTerm = searchTerm.toLowerCase().trim();
+                    if (!khoanThu.getTenKhoanThu().toLowerCase().contains(lowerSearchTerm)) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            })
+            .collect(Collectors.toList());
+        
+        // Áp dụng sort direction
+        if (sortDir.equalsIgnoreCase("desc")) {
+            filteredList.sort((a, b) -> {
+                if (sortBy.equals("id")) {
+                    return b.getId().compareTo(a.getId());
+                }
+                return 0; // Default
+            });
+        }
+        
+        // Tính toán pagination
+        int start = page * size;
+        int end = Math.min(start + size, filteredList.size());
+        
+        List<KhoanThu> pageContent = start < filteredList.size() 
+            ? filteredList.subList(start, end) 
+            : List.of();
+        
+        // Convert to DTO
+        List<KhoanThuDTO> dtoList = pageContent.stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
+        
+        // Tạo Page object
+        return new org.springframework.data.domain.PageImpl<>(
+            dtoList, 
+            pageable, 
+            filteredList.size()
+        );
     }
     
     @Override

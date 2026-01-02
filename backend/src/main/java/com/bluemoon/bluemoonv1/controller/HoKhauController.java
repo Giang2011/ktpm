@@ -3,6 +3,7 @@ package com.bluemoon.bluemoonv1.controller;
 import com.bluemoon.bluemoonv1.dto.*;
 import com.bluemoon.bluemoonv1.service.HoKhauService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 // import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +23,16 @@ public class HoKhauController {
     public ResponseEntity<List<HoKhauDTO>> getAllHoKhau() {
         List<HoKhauDTO> hoKhauList = hoKhauService.getAllHoKhau();
         return ResponseEntity.ok(hoKhauList);
+    }
+    
+    @GetMapping("/paged")
+    public ResponseEntity<Page<HoKhauDTO>> getHoKhauPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        Page<HoKhauDTO> hoKhauPage = hoKhauService.getHoKhauPaged(page, size, sortBy, sortDir);
+        return ResponseEntity.ok(hoKhauPage);
     }
     
     @GetMapping("/{id}")

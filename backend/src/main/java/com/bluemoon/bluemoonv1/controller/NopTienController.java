@@ -4,6 +4,7 @@ import com.bluemoon.bluemoonv1.dto.NopTienDTO;
 import com.bluemoon.bluemoonv1.dto.NopTienRequestDTO;
 import com.bluemoon.bluemoonv1.service.NopTienService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,26 @@ public class NopTienController {
     public ResponseEntity<List<NopTienDTO>> getAllNopTien() {
         List<NopTienDTO> nopTienList = nopTienService.getAllNopTien();
         return ResponseEntity.ok(nopTienList);
+    }
+    
+    @GetMapping("/paged")
+    public ResponseEntity<Page<NopTienDTO>> getNopTienPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) Long hoKhauId,
+            @RequestParam(required = false) Long khoanThuId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam(required = false) String searchTerm) {
+        
+        Page<NopTienDTO> nopTienPage = nopTienService.getNopTienPaged(
+                page, size, sortBy, sortDir, 
+                hoKhauId, khoanThuId, 
+                startDate, endDate, 
+                searchTerm);
+        return ResponseEntity.ok(nopTienPage);
     }
     
     @GetMapping("/{id}")

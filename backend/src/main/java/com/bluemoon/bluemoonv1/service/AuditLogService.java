@@ -1,6 +1,7 @@
 package com.bluemoon.bluemoonv1.service;
 
 import com.bluemoon.bluemoonv1.dto.AuditLogDTO;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +27,13 @@ public interface AuditLogService {
      * Lấy tất cả log
      */
     List<AuditLogDTO> getAllLogs();
+    
+    /**
+     * Lấy log với pagination và filter theo ngày
+     */
+    Page<AuditLogDTO> getLogsPaged(int page, int size, String sortBy, String sortDir,
+                                    LocalDateTime startDate, LocalDateTime endDate,
+                                    String searchTerm);
     
     /**
      * Lấy log theo entity name và entity id

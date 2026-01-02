@@ -10,6 +10,8 @@ import com.bluemoon.bluemoonv1.repository.HoKhauRepository;
 import com.bluemoon.bluemoonv1.repository.NhanKhauRepository;
 import com.bluemoon.bluemoonv1.service.NhanKhauService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,13 @@ public class NhanKhauServiceImpl implements NhanKhauService {
         return nhanKhauRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public Page<NhanKhauDTO> getNhanKhauPaged(Pageable pageable) {
+        return nhanKhauRepository.findAll(pageable)
+                .map(this::convertToDTO);
     }
     
     @Override
@@ -120,6 +129,7 @@ public class NhanKhauServiceImpl implements NhanKhauService {
         dto.setId(nhanKhau.getId());
         dto.setHoKhauId(nhanKhau.getHoKhau().getId());
         dto.setTenChuHo(nhanKhau.getHoKhau().getTenChuHo());
+        dto.setDiaChi(nhanKhau.getHoKhau().getDiaChi());
         dto.setHoTen(nhanKhau.getHoTen());
         dto.setNgaySinh(nhanKhau.getNgaySinh());
         dto.setGioiTinh(nhanKhau.getGioiTinh());

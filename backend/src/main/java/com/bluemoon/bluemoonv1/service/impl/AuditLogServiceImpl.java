@@ -9,6 +9,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,6 +89,63 @@ public class AuditLogServiceImpl implements AuditLogService {
         return auditLogRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AuditLogDTO> getLogsPaged(int page, int size, String sortBy, String sortDir,
+                                           LocalDateTime startDate, LocalDateTime endDate,
+                                           String searchTerm) {
+        // Get all logs
+        List<AuditLog> allLogs = auditLogRepository.findAllByOrderByCreatedAtDesc();
+        
+        // Apply filters
+        List<AuditLog> filtered = allLogs.stream()
+                .filter(log -> {
+                    // Filter by date range
+                    if (startDate != null && log.getCreatedAt().isBefore(startDate)) {
+                        return false;
+                    }
+                    if (endDate != null && log.getCreatedAt().isAfter(endDate)) {
+                        return false;
+                    }
+                    
+                    // Filter by search term (actor, action, entityName)
+                    if (searchTerm != null && !searchTerm.isEmpty()) {
+                        String search = searchTerm.toLowerCase();
+                        boolean matchActor = log.getActor() != null && 
+                                log.getActor().toLowerCase().contains(search);
+                        boolean matchAction = log.getAction() != null && 
+                                log.getAction().toLowerCase().contains(search);
+                        boolean matchEntity = log.getEntityName() != null && 
+                                log.getEntityName().toLowerCase().contains(search);
+                        
+                        if (!matchActor && !matchAction && !matchEntity) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                })
+                .collect(Collectors.toList());
+        
+        // Sort by createdAt desc (already sorted from repository)
+        
+        // Convert to DTO
+        List<AuditLogDTO> dtoList = filtered.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        
+        // Pagination
+        int start = page * size;
+        int end = Math.min(start + size, dtoList.size());
+        
+        if (start > dtoList.size()) {
+            return new PageImpl<>(List.of(), PageRequest.of(page, size), dtoList.size());
+        }
+        
+        List<AuditLogDTO> pagedList = dtoList.subList(start, end);
+        return new PageImpl<>(pagedList, PageRequest.of(page, size), dtoList.size());
     }
     
     @Override

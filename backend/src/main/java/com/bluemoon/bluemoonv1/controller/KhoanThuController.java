@@ -3,6 +3,7 @@ package com.bluemoon.bluemoonv1.controller;
 import com.bluemoon.bluemoonv1.dto.*;
 import com.bluemoon.bluemoonv1.service.KhoanThuService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,30 @@ public class KhoanThuController {
     public ResponseEntity<List<KhoanThuDTO>> getAllKhoanThu() {
         List<KhoanThuDTO> khoanThuList = khoanThuService.getAllKhoanThu();
         return ResponseEntity.ok(khoanThuList);
+    }
+    
+    /**
+     * Endpoint pagination với filter
+     * @param page Số trang (bắt đầu từ 0)
+     * @param size Số lượng bản ghi mỗi trang (mặc định 10)
+     * @param sortBy Trường sắp xếp (mặc định: id)
+     * @param sortDir Hướng sắp xếp asc/desc (mặc định: desc)
+     * @param loaiKhoanThu Loại khoản thu (0: Bắt buộc, 1: Tự nguyện, null: tất cả)
+     * @param conHanNop Lọc khoản thu còn hạn nộp (true: còn hạn, false/null: tất cả)
+     * @param searchTerm Tìm kiếm theo tên khoản thu
+     */
+    @GetMapping("/paged")
+    public ResponseEntity<Page<KhoanThuDTO>> getKhoanThuPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) Integer loaiKhoanThu,
+            @RequestParam(required = false) Boolean conHanNop,
+            @RequestParam(required = false) String searchTerm) {
+        Page<KhoanThuDTO> khoanThuPage = khoanThuService.getKhoanThuPaged(
+            page, size, sortBy, sortDir, loaiKhoanThu, conHanNop, searchTerm);
+        return ResponseEntity.ok(khoanThuPage);
     }
     
     @GetMapping("/{id}")

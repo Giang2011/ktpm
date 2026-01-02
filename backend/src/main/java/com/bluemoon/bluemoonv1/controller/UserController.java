@@ -1,5 +1,6 @@
 package com.bluemoon.bluemoonv1.controller;
 
+import com.bluemoon.bluemoonv1.dto.LoginRequestDTO;
 import com.bluemoon.bluemoonv1.dto.UserDTO;
 import com.bluemoon.bluemoonv1.dto.UserRequestDTO;
 import com.bluemoon.bluemoonv1.service.UserService;
@@ -93,14 +94,13 @@ public class UserController {
      * Trả về thông tin đầy đủ của tài khoản (bao gồm role) nếu đăng nhập thành công
      * Không bao gồm password trong response
      * 
-     * @param username Tên đăng nhập
-     * @param password Mật khẩu
+     * @param loginRequest DTO chứa username và password
      * @return Thông tin tài khoản nếu đăng nhập thành công
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
         try {
-            UserDTO user = userService.login(username, password);
+            UserDTO user = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

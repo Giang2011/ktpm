@@ -1,12 +1,15 @@
 package com.bluemoon.bluemoonv1.service;
 
 import com.bluemoon.bluemoonv1.dto.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface HoKhauService {
     
     List<HoKhauDTO> getAllHoKhau();
+    
+    Page<HoKhauDTO> getHoKhauPaged(int page, int size, String sortBy, String sortDir);
     
     HoKhauDTO getHoKhauById(Long id);
     

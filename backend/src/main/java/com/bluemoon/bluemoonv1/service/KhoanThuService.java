@@ -1,6 +1,7 @@
 package com.bluemoon.bluemoonv1.service;
 
 import com.bluemoon.bluemoonv1.dto.*;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,6 +10,20 @@ import java.util.List;
 public interface KhoanThuService {
     
     List<KhoanThuDTO> getAllKhoanThu();
+    
+    /**
+     * Lấy danh sách khoản thu với phân trang và lọc
+     * @param page Số trang (bắt đầu từ 0)
+     * @param size Số lượng bản ghi mỗi trang
+     * @param sortBy Trường để sắp xếp
+     * @param sortDir Hướng sắp xếp (asc/desc)
+     * @param loaiKhoanThu Loại khoản thu (0: Bắt buộc, 1: Tự nguyện, null: tất cả)
+     * @param conHanNop Lọc khoản thu còn hạn nộp (true: còn hạn, false/null: tất cả)
+     * @param searchTerm Tìm kiếm theo tên khoản thu
+     * @return Page của KhoanThuDTO
+     */
+    Page<KhoanThuDTO> getKhoanThuPaged(int page, int size, String sortBy, String sortDir,
+                                        Integer loaiKhoanThu, Boolean conHanNop, String searchTerm);
     
     KhoanThuDTO getKhoanThuById(Long id);
     

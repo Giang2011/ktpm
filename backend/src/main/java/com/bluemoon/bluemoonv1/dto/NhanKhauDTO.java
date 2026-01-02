@@ -13,6 +13,7 @@ public class NhanKhauDTO {
     private Long id;
     private Long hoKhauId;
     private String tenChuHo; // Tên chủ hộ (để hiển thị)
+    private String diaChi; // Địa chỉ hộ khẩu
     private String hoTen;
     private LocalDate ngaySinh;
     private String gioiTinh;

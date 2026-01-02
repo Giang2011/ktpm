@@ -3,6 +3,7 @@ package com.bluemoon.bluemoonv1.controller;
 import com.bluemoon.bluemoonv1.dto.AuditLogDTO;
 import com.bluemoon.bluemoonv1.service.AuditLogService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,27 @@ public class AuditLogController {
     @GetMapping
     public ResponseEntity<List<AuditLogDTO>> getAllLogs() {
         List<AuditLogDTO> logs = auditLogService.getAllLogs();
+        return ResponseEntity.ok(logs);
+    }
+    
+    /**
+     * Lấy log với pagination
+     * GET /api/audit-logs/paged?page=0&size=10&startDate=...&endDate=...
+     */
+    @GetMapping("/paged")
+    public ResponseEntity<Page<AuditLogDTO>> getLogsPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam(required = false) String searchTerm) {
+        
+        Page<AuditLogDTO> logs = auditLogService.getLogsPaged(
+                page, size, sortBy, sortDir,
+                startDate, endDate,
+                searchTerm);
         return ResponseEntity.ok(logs);
     }
     
