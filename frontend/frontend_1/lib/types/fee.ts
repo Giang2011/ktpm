@@ -12,34 +12,18 @@ export interface Fee {
   payments?: Payment[];
 }
 
-export interface CreateFeeRequest {
-  type: string;
-  amount: number;
-  month: string;
-  description: string;
-  compulsory: boolean;
-}
-
-export interface UpdateFeeRequest {
-  type?: string;
-  amount?: number;
-  month?: string;
-  description?: string;
-  compulsory?: boolean;
-}
-
 // Specific response for fees using common pagination type
 export interface FeesResponse extends PageableResponse<Fee> {}
 
-// New types aligned with ktpm backend (KhoanThu)
+// Main types aligned with backend KhoanThuDTO
 export interface KhoanThu {
   id: number;
   tenKhoanThu: string;
   loaiKhoanThu: number; // 0: Bắt buộc, 1: Tự nguyện
   donGia: number;
   moTa?: string;
-  ngayBatDau?: string;
-  ngayKetThuc?: string;
+  ngayBatDau?: string; // ISO date string
+  ngayKetThuc?: string; // ISO date string
 }
 
 export interface HoKhau {
@@ -59,13 +43,38 @@ export interface KhoanThuDetail {
   soHoChuaDong: number | null;
 }
 
-export interface CreateKhoanThuRequest {
+// Request types for create/update
+export interface CreateFeeRequest {
   tenKhoanThu: string;
-  loaiKhoanThu: number;
+  loaiKhoanThu: number; // 0: Bắt buộc, 1: Tự nguyện
   donGia: number;
+  moTa?: string;
+  ngayBatDau?: string; // ISO date string: "2024-01-01"
+  ngayKetThuc?: string; // ISO date string: "2024-12-31"
+}
+
+export interface UpdateFeeRequest {
+  tenKhoanThu?: string;
+  loaiKhoanThu?: number;
+  donGia?: number;
   moTa?: string;
   ngayBatDau?: string;
   ngayKetThuc?: string;
 }
 
-export interface UpdateKhoanThuRequest extends CreateKhoanThuRequest {}
+// Helper function to check if a fee is compulsory
+export function isFeeCompulsory(khoanThu: KhoanThu): boolean {
+  return khoanThu.loaiKhoanThu === 0;
+}
+
+// Helper function to check if a fee is active (within date range)
+export function isFeeActive(khoanThu: KhoanThu, date: Date = new Date()): boolean {
+  const today = date.toISOString().split('T')[0];
+  const start = khoanThu.ngayBatDau || '';
+  const end = khoanThu.ngayKetThuc || '';
+  
+  if (!start && !end) return true; // No date restriction
+  if (start && today < start) return false; // Not started yet
+  if (end && today > end) return false; // Already ended
+  return true;
+}

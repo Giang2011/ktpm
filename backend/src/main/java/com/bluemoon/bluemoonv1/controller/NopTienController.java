@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/noptien")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class NopTienController {
     
     private final NopTienService nopTienService;

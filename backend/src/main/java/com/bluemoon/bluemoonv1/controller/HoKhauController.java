@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/hokhau")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class HoKhauController {
     
     private final HoKhauService hoKhauService;

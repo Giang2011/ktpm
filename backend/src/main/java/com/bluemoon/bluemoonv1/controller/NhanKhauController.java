@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/nhankhau")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class NhanKhauController {
     
     private final NhanKhauService nhanKhauService;
