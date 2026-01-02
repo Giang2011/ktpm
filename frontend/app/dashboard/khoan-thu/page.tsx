@@ -11,16 +11,23 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { 
-  Edit, 
-  Trash2, 
-  Eye, 
-  Plus, 
-  ChevronLeft, 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Edit,
+  Trash2,
+  Eye,
+  Plus,
+  ChevronLeft,
   ChevronRight,
   Search,
   DollarSign,
-  Users as UsersIcon
+  Users as UsersIcon,
+  MoreHorizontal
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -63,13 +70,13 @@ export default function KhoanThuPage() {
   const [searchKeyword, setSearchKeyword] = useState("")
   const [loaiFilter, setLoaiFilter] = useState<string>("all") // all, batbuoc, tunguyen
   const [hanNopFilter, setHanNopFilter] = useState<string>("all") // all, conhan
-  
+
   // Detail dialog states
   const [selectedKhoanThu, setSelectedKhoanThu] = useState<KhoanThu | null>(null)
   const [detailLoading, setDetailLoading] = useState(false)
   const [khoanThuDetail, setKhoanThuDetail] = useState<KhoanThuDetail | null>(null)
   const [detailDialogOpen, setDetailDialogOpen] = useState(false)
-  
+
   // Form dialog states
   const [formDialogOpen, setFormDialogOpen] = useState(false)
   const [editMode, setEditMode] = useState(false)
@@ -86,7 +93,7 @@ export default function KhoanThuPage() {
   const fetchKhoanThu = async () => {
     try {
       setLoading(true)
-      
+
       // Xây dựng query params
       const params = new URLSearchParams({
         page: currentPage.toString(),
@@ -94,21 +101,21 @@ export default function KhoanThuPage() {
         sortBy: "id",
         sortDir: "desc"
       })
-      
+
       // Thêm filter loại khoản thu
       if (loaiFilter === "batbuoc") {
         params.append("loaiKhoanThu", "0")
       } else if (loaiFilter === "tunguyen") {
         params.append("loaiKhoanThu", "1")
       }
-      
+
       // Thêm filter còn hạn nộp
       if (hanNopFilter === "conhan") {
         params.append("conHanNop", "true")
       }
-      
+
       const response = await api.get(`/api/khoanthu/paged?${params.toString()}`)
-      
+
       if (response.ok) {
         const data = await response.json()
         setKhoanThuList(data.content)
@@ -135,9 +142,9 @@ export default function KhoanThuPage() {
     try {
       setDetailLoading(true)
       setSelectedKhoanThu(khoanThu)
-      
+
       const response = await api.get(`/api/khoanthu/${khoanThu.id}/chi-tiet`)
-      
+
       if (response.ok) {
         const data = await response.json()
         setKhoanThuDetail(data)
@@ -221,7 +228,7 @@ export default function KhoanThuPage() {
     if (formData.ngayKetThuc && formData.ngayBatDau) {
       const ngayBatDau = new Date(formData.ngayBatDau)
       const ngayKetThuc = new Date(formData.ngayKetThuc)
-      
+
       if (ngayKetThuc <= ngayBatDau) {
         toast.error("Ngày kết thúc phải sau ngày bắt đầu")
         return
@@ -250,9 +257,9 @@ export default function KhoanThuPage() {
   }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', { 
-      style: 'currency', 
-      currency: 'VND' 
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
     }).format(amount)
   }
 
@@ -393,36 +400,35 @@ export default function KhoanThuPage() {
                           </TableCell>
                           <TableCell>{khoanThu.soHoDaDong}</TableCell>
                           <TableCell className="text-right">
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => fetchKhoanThuDetail(khoanThu)}
-                                title="Xem chi tiết"
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                              {isStaff() && (
-                                <>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => handleEdit(khoanThu)}
-                                    title="Chỉnh sửa"
-                                  >
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => handleDelete(khoanThu.id)}
-                                    title="Xóa"
-                                  >
-                                    <Trash2 className="h-4 w-4 text-red-500" />
-                                  </Button>
-                                </>
-                              )}
-                            </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Mở menu</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => fetchKhoanThuDetail(khoanThu)}>
+                                  <Eye className="mr-2 h-4 w-4" />
+                                  Xem chi tiết
+                                </DropdownMenuItem>
+                                {isStaff() && (
+                                  <>
+                                    <DropdownMenuItem onClick={() => handleEdit(khoanThu)}>
+                                      <Edit className="mr-2 h-4 w-4" />
+                                      Chỉnh sửa
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      onClick={() => handleDelete(khoanThu.id)}
+                                      className="text-red-600 focus:text-red-600"
+                                    >
+                                      <Trash2 className="mr-2 h-4 w-4" />
+                                      Xóa
+                                    </DropdownMenuItem>
+                                  </>
+                                )}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         </TableRow>
                       ))

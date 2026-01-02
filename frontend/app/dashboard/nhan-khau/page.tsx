@@ -11,15 +11,22 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { 
-  Edit, 
-  Trash2, 
-  Eye, 
-  Plus, 
-  ChevronLeft, 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Edit,
+  Trash2,
+  Eye,
+  Plus,
+  ChevronLeft,
   ChevronRight,
   Search,
-  Users
+  Users,
+  MoreHorizontal
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -465,8 +472,8 @@ export default function NhanKhauPage() {
                                 {selectedNhanKhau && (
                                   <div className="grid gap-4 md:grid-cols-2">
                                     <div>
-                                      <Label className="text-muted-foreground">ID</Label>
-                                      <p className="font-medium">{selectedNhanKhau.id}</p>
+                                      <Label className="text-muted-foreground">Họ và tên</Label>
+                                      <p className="font-medium">{selectedNhanKhau.hoTen}</p>
                                     </div>
                                     <div>
                                       <Label className="text-muted-foreground">Họ và tên</Label>
@@ -528,7 +535,7 @@ export default function NhanKhauPage() {
                     ))}
                 </TableBody>
               </Table>
-              
+
               <div className="flex items-center justify-between mt-4">
                 <div className="text-sm text-muted-foreground">
                   Trang {currentPage + 1} / {pageData.totalPages}

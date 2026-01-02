@@ -35,7 +35,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, Edit, Trash2, Eye, Search, Calendar } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Plus, Edit, Trash2, Eye, Search, Calendar, MoreHorizontal } from "lucide-react";
 import { api } from "@/lib/api-client";
 
 interface NopTien {
@@ -68,13 +74,13 @@ export default function NopTienPage() {
   const [nopTienList, setNopTienList] = useState<NopTien[]>([]);
   const [hoKhauList, setHoKhauList] = useState<HoKhau[]>([]);
   const [khoanThuList, setKhoanThuList] = useState<KhoanThu[]>([]);
-  
+
   const [searchKeyword, setSearchKeyword] = useState("");
   const [hoKhauFilter, setHoKhauFilter] = useState<string>("all");
   const [khoanThuFilter, setKhoanThuFilter] = useState<string>("all");
   const [startDateFilter, setStartDateFilter] = useState("");
   const [endDateFilter, setEndDateFilter] = useState("");
-  
+
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -122,7 +128,7 @@ export default function NopTienPage() {
       }
 
       const response = await api.get(`/api/noptien/paged?${params.toString()}`);
-      
+
       if (response.ok) {
         const data = await response.json();
         setNopTienList(data.content || []);
@@ -139,7 +145,7 @@ export default function NopTienPage() {
   const loadHoKhau = async () => {
     try {
       const response = await api.get("/api/hokhau");
-      
+
       if (response.ok) {
         const data = await response.json();
         setHoKhauList(data || []);
@@ -152,7 +158,7 @@ export default function NopTienPage() {
   const loadKhoanThu = async () => {
     try {
       const response = await api.get("/api/khoanthu");
-      
+
       if (response.ok) {
         const data = await response.json();
         setKhoanThuList(data || []);
@@ -433,32 +439,36 @@ export default function NopTienPage() {
                     </TableCell>
                     <TableCell>{nt.nguoiNop}</TableCell>
                     <TableCell>{formatDateTime(nt.ngayNop)}</TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleView(nt)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      {isStaff() && (
-                        <>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEdit(nt)}
-                          >
-                            <Edit className="h-4 w-4" />
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Mở menu</span>
                           </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDelete(nt.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </>
-                      )}
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleView(nt)}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            Xem chi tiết
+                          </DropdownMenuItem>
+                          {isStaff() && (
+                            <>
+                              <DropdownMenuItem onClick={() => handleEdit(nt)}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Chỉnh sửa
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDelete(nt.id)}
+                                className="text-red-600 focus:text-red-600"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Xóa
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))

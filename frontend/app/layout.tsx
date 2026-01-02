@@ -11,7 +11,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "BlueMoon - Quản lý chung cư",
   description: "Hệ thống quản lý chung cư BlueMoon",
-  generator: "v0.app",
+  generator: "BlueMoon",
   icons: {
     icon: [
       {
