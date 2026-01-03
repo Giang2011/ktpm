@@ -71,9 +71,9 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background font-sans">
       
-      {/* SIDEBAR */}
+      {}
       <aside className="w-64 border-r bg-sidebar flex flex-col shrink-0 transition-all duration-300">
-        {/* Phần Logo */}
+        {}
         <div className="flex h-14 items-center border-b px-6 bg-sidebar shrink-0 lg:h-[60px]">
           <div className="mr-3 relative h-8 w-8 overflow-hidden rounded-md">
             <Image 
@@ -90,7 +90,7 @@ export default function DashboardLayout({
           </div>
         </div>
 
-        {/* Menu Navigation */}
+        {}
         <ScrollArea className="flex-1 py-4">
           <nav className="space-y-1 px-3">
             {navigation.map((item) => {
@@ -108,7 +108,7 @@ export default function DashboardLayout({
                     }
                   `}
                 >
-                  {/* Active Indicator Strip */}
+                  {}
                   {isActive && (
                     <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-primary" />
                   )}
@@ -125,7 +125,7 @@ export default function DashboardLayout({
           </nav>
         </ScrollArea>
 
-        {/* Nút Đăng Xuất */}
+        {}
         <div className="border-t p-4 bg-sidebar shrink-0">
           <Button
             variant="ghost"
@@ -138,7 +138,7 @@ export default function DashboardLayout({
         </div>
       </aside>
 
-      {/* MAIN CONTENT */}
+      {}
       <div className="flex flex-1 flex-col overflow-hidden">
         <header className="flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur px-6 shrink-0 lg:h-[60px] z-10 shadow-sm justify-between transition-colors duration-300">
             <Breadcrumb>

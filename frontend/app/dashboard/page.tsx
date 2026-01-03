@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Users, UserCircle, Receipt, DollarSign, TrendingUp, Calendar } from "lucide-react";
+import { Users, UserCircle, Receipt, DollarSign, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
@@ -96,6 +95,7 @@ export default function DashboardPage() {
     }
   };
 
+  // Hàm format tiền tệ hiển thị ở Card Tổng (vẫn giữ format VND chuẩn hoặc bạn có thể sửa nếu muốn)
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -145,10 +145,7 @@ export default function DashboardPage() {
             <Calendar className="h-4 w-4" />
             {new Date().toLocaleDateString('vi-VN')}
           </Button>
-          <Button className="gap-2">
-            <TrendingUp className="h-4 w-4" />
-            Xuất Báo Cáo
-          </Button>
+          {/* Đã xóa nút Xuất Báo Cáo */}
         </div>
       </div>
 
@@ -181,7 +178,7 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle>Biểu Đồ Thu Phí</CardTitle>
             <CardDescription>
-              Doanh thu từ phí chung cư trong 6 tháng qua
+              Doanh thu từ phí chung cư trong 6 tháng qua (Đơn vị: Triệu đồng)
             </CardDescription>
           </CardHeader>
           <CardContent className="pl-2">
@@ -201,11 +198,14 @@ export default function DashboardPage() {
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
-                    tickFormatter={(value) => `${value / 1000000}M`}
+                    // Cập nhật: Giữ nguyên giá trị (Scale 1), không chia cho 1 triệu nữa
+                    tickFormatter={(value) => `${value}`} 
                   />
                   <Tooltip 
                     cursor={{fill: 'var(--muted)'}}
                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                    // Cập nhật tooltip để hiển thị rõ đơn vị
+                    formatter={(value: number) => [`${value} (Triệu đồng)`, "Doanh thu"]}
                   />
                   <Bar dataKey="total" radius={[4, 4, 0, 0]}>
                      {monthlyData.map((entry, index) => (
@@ -235,8 +235,7 @@ export default function DashboardPage() {
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Tháng này:</span>
                 <span className="font-medium">
-                    {/* Bạn có thể tính thêm % tăng trưởng ở đây */}
-                    {monthlyData.length > 0 ? formatCurrency(monthlyData[monthlyData.length-1].total) : '0 đ'}
+                    {monthlyData.length > 0 ? formatCurrency(monthlyData[monthlyData.length-1].total) : '0 ₫'}
                 </span>
               </div>
               <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
