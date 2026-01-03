@@ -18,7 +18,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { ModeToggle } from "@/components/model-toggle"
+import { ModeToggle } from "@/components/mode-toggle"
 
 const ROUTE_NAMES: Record<string, string> = {
   "dashboard": "Tổng Quan",
