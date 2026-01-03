@@ -213,7 +213,7 @@ export default function HoKhauPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold">Quản lý hộ khẩu</h1>
+          <h1 className="text-3xl font-semibold">QUẢN LÝ HỘ KHẨU </h1>
           <p className="text-muted-foreground mt-1">
             Danh sách các hộ gia đình trong chung cư
           </p>

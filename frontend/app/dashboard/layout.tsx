@@ -72,42 +72,52 @@ export default function DashboardLayout({
     <div className="flex h-screen w-full overflow-hidden bg-background font-sans">
       
       {/* SIDEBAR */}
-      <aside className="w-64 border-r bg-sidebar flex flex-col shrink-0 transition-colors duration-300">
+      <aside className="w-64 border-r bg-sidebar flex flex-col shrink-0 transition-all duration-300">
         {/* Phần Logo */}
         <div className="flex h-14 items-center border-b px-6 bg-sidebar shrink-0 lg:h-[60px]">
-          <div className="mr-3 relative h-8 w-8">
+          <div className="mr-3 relative h-8 w-8 overflow-hidden rounded-md">
             <Image 
               src="/real_estate.jpg" 
               alt="BlueMoon Logo"
               fill
-              className="object-contain rounded-sm"
+              className="object-cover"
               priority
             />
           </div>
           <div>
             <h1 className="font-bold text-lg leading-tight tracking-tight text-sidebar-foreground">BlueMoon</h1>
-            <p className="text-xs text-muted-foreground font-medium">Quản lý chung cư</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Quản lý chung cư</p>
           </div>
         </div>
 
-        {/* --- ĐÃ XÓA PHẦN THÔNG TIN USER Ở ĐÂY --- */}
-
         {/* Menu Navigation */}
-        <ScrollArea className="flex-1">
-          <nav className="space-y-1 p-4">
+        <ScrollArea className="flex-1 py-4">
+          <nav className="space-y-1 px-3">
             {navigation.map((item) => {
               const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href))
+              
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                  }`}
+                  className={`
+                    group flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200 relative
+                    ${isActive 
+                      ? "bg-primary/10 text-primary font-semibold" 
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }
+                  `}
                 >
-                  <item.icon className={`h-5 w-5 ${isActive ? "text-sidebar-primary-foreground" : "text-muted-foreground"}`} />
+                  {/* Active Indicator Strip */}
+                  {isActive && (
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-primary" />
+                  )}
+
+                  <item.icon 
+                    className={`h-5 w-5 transition-colors ${
+                      isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                    }`} 
+                  />
                   {item.name}
                 </Link>
               )
@@ -157,7 +167,7 @@ export default function DashboardLayout({
 
         <main className="flex-1 overflow-y-auto bg-muted/20 p-0 transition-colors duration-300">
           <div className="flex flex-col min-h-full">
-            <div className="flex-1 container mx-auto p-6">
+            <div className="flex-1 container mx-auto p-6 animate-in fade-in duration-500 slide-in-from-bottom-2">
               {children}
             </div>
             <Footer />

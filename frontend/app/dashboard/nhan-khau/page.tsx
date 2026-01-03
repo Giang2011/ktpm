@@ -258,7 +258,7 @@ export default function NhanKhauPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold">Quản lý nhân khẩu</h1>
+          <h1 className="text-3xl font-semibold">QUẢN LÝ NHÂN KHẨU</h1>
           <p className="text-muted-foreground mt-1">
             Danh sách cư dân trong chung cư
           </p>

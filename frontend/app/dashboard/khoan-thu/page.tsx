@@ -289,7 +289,7 @@ export default function KhoanThuPage() {
         <CardHeader>
           <CardTitle className="text-3xl font-bold flex items-center gap-2">
             <DollarSign className="h-8 w-8" />
-            Quản lý Khoản thu
+            QUẢN LÝ KHOẢN THU
           </CardTitle>
           <CardDescription>
             Quản lý các khoản thu của chung cư
