@@ -7,9 +7,10 @@ export function Footer() {
     const currentYear = new Date().getFullYear()
 
     return (
-        <footer className="border-t bg-card mt-auto">
+        <footer className="border-t bg-card mt-auto transition-colors duration-300">
             <div className="container mx-auto px-6 py-6">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                    {/* Logo & Brand */}
                     <div className="flex items-center gap-2">
                         <Building2 className="h-5 w-5 text-primary" />
                         <span className="font-semibold">BlueMoon</span>
@@ -18,19 +19,30 @@ export function Footer() {
                         </span>
                     </div>
 
-                    <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                        <Link href="/dashboard" className="hover:text-foreground transition-colors">
-                            Tổng quan
+                    {/* CẬP NHẬT: Viết hoa các liên kết */}
+                    <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+                        <Link href="/dashboard" className="hover:text-primary transition-colors">
+                            Tổng Quan
                         </Link>
-                        <Link href="/dashboard/ho-khau" className="hover:text-foreground transition-colors">
-                            Hộ khẩu
+                        <Link href="/dashboard/ho-khau" className="hover:text-primary transition-colors">
+                            Hộ Khẩu
                         </Link>
-                        <Link href="/dashboard/nhan-khau" className="hover:text-foreground transition-colors">
-                            Nhân khẩu
+                        <Link href="/dashboard/nhan-khau" className="hover:text-primary transition-colors">
+                            Nhân Khẩu
+                        </Link>
+                        <Link href="/dashboard/khoan-thu" className="hover:text-primary transition-colors">
+                            Khoản Thu
+                        </Link>
+                        <Link href="/dashboard/nop-tien" className="hover:text-primary transition-colors">
+                            Nộp Tiền
+                        </Link>
+                        <Link href="/dashboard/log" className="hover:text-primary transition-colors">
+                            Nhật Ký
                         </Link>
                     </div>
 
-                    <p className="text-sm text-muted-foreground">
+                    {/* Copyright */}
+                    <p className="text-sm text-muted-foreground whitespace-nowrap">
                         © {currentYear} BlueMoon. All rights reserved.
                     </p>
                 </div>
