@@ -364,7 +364,7 @@ export default function NopTienPage() {
                   <SelectItem value="all">Tất cả khoản thu</SelectItem>
                   {khoanThuList.map((kt) => (
                     <SelectItem key={kt.id} value={kt.id.toString()}>
-                      {kt.tenKhoanThu} ({kt.loaiKhoanThu === 1 ? "Bắt buộc" : "Tự nguyện"})
+                      {kt.tenKhoanThu} ({kt.loaiKhoanThu === 0 ? "Bắt buộc" : "Tự nguyện"})
                     </SelectItem>
                   ))}
                 </SelectContent>
