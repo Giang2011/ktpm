@@ -35,7 +35,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, Edit, Trash2, Eye, Search, Calendar } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Plus, Edit, Trash2, Eye, Search, Calendar, MoreHorizontal } from "lucide-react";
 import { api } from "@/lib/api-client";
 
 interface NopTien {
@@ -68,13 +74,17 @@ export default function NopTienPage() {
   const [nopTienList, setNopTienList] = useState<NopTien[]>([]);
   const [hoKhauList, setHoKhauList] = useState<HoKhau[]>([]);
   const [khoanThuList, setKhoanThuList] = useState<KhoanThu[]>([]);
-  
+
   const [searchKeyword, setSearchKeyword] = useState("");
   const [hoKhauFilter, setHoKhauFilter] = useState<string>("all");
   const [khoanThuFilter, setKhoanThuFilter] = useState<string>("all");
   const [startDateFilter, setStartDateFilter] = useState("");
   const [endDateFilter, setEndDateFilter] = useState("");
   
+  // Thêm state cho search trong dropdowns
+  const [hoKhauSearchKeyword, setHoKhauSearchKeyword] = useState("");
+  const [khoanThuSearchKeyword, setKhoanThuSearchKeyword] = useState("");
+
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -122,7 +132,7 @@ export default function NopTienPage() {
       }
 
       const response = await api.get(`/api/noptien/paged?${params.toString()}`);
-      
+
       if (response.ok) {
         const data = await response.json();
         setNopTienList(data.content || []);
@@ -139,7 +149,7 @@ export default function NopTienPage() {
   const loadHoKhau = async () => {
     try {
       const response = await api.get("/api/hokhau");
-      
+
       if (response.ok) {
         const data = await response.json();
         setHoKhauList(data || []);
@@ -152,7 +162,7 @@ export default function NopTienPage() {
   const loadKhoanThu = async () => {
     try {
       const response = await api.get("/api/khoanthu");
-      
+
       if (response.ok) {
         const data = await response.json();
         setKhoanThuList(data || []);
@@ -171,6 +181,22 @@ export default function NopTienPage() {
       nt.nguoiNop.toLowerCase().includes(keyword) ||
       (nt.ghiChu && nt.ghiChu.toLowerCase().includes(keyword))
     );
+  });
+  
+  // Thêm filtered lists cho dropdowns
+  const filteredHoKhauList = hoKhauList.filter((hk) => {
+    if (!hoKhauSearchKeyword) return true;
+    const keyword = hoKhauSearchKeyword.toLowerCase();
+    return (
+      hk.tenChuHo.toLowerCase().includes(keyword) ||
+      hk.diaChi.toLowerCase().includes(keyword)
+    );
+  });
+  
+  const filteredKhoanThuList = khoanThuList.filter((kt) => {
+    if (!khoanThuSearchKeyword) return true;
+    const keyword = khoanThuSearchKeyword.toLowerCase();
+    return kt.tenKhoanThu.toLowerCase().includes(keyword);
   });
 
   const handleAdd = () => {
@@ -298,7 +324,7 @@ export default function NopTienPage() {
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Quản lý nộp tiền</h1>
+          <h1 className="text-3xl font-bold">QUẢN LÝ NỘP TIỀN</h1>
           <p className="text-muted-foreground">
             Quản lý các giao dịch nộp tiền của hộ khẩu
           </p>
@@ -333,36 +359,50 @@ export default function NopTienPage() {
 
             <div className="space-y-2">
               <Label>Hộ khẩu</Label>
-              <Select value={hoKhauFilter} onValueChange={setHoKhauFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Chọn hộ khẩu" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tất cả hộ khẩu</SelectItem>
-                  {hoKhauList.map((hk) => (
-                    <SelectItem key={hk.id} value={hk.id.toString()}>
-                      {hk.tenChuHo} - {hk.diaChi}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <Input
+                  placeholder="Tìm kiếm hộ khẩu..."
+                  value={hoKhauSearchKeyword}
+                  onChange={(e) => setHoKhauSearchKeyword(e.target.value)}
+                />
+                <Select value={hoKhauFilter} onValueChange={setHoKhauFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn hộ khẩu" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    <SelectItem value="all">Tất cả hộ khẩu</SelectItem>
+                    {filteredHoKhauList.map((hk) => (
+                      <SelectItem key={hk.id} value={hk.id.toString()}>
+                        {hk.tenChuHo} - {hk.diaChi}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-2">
               <Label>Khoản thu</Label>
-              <Select value={khoanThuFilter} onValueChange={setKhoanThuFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Chọn khoản thu" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tất cả khoản thu</SelectItem>
-                  {khoanThuList.map((kt) => (
-                    <SelectItem key={kt.id} value={kt.id.toString()}>
-                      {kt.tenKhoanThu} ({kt.loaiKhoanThu === 1 ? "Bắt buộc" : "Tự nguyện"})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <Input
+                  placeholder="Tìm kiếm khoản thu..."
+                  value={khoanThuSearchKeyword}
+                  onChange={(e) => setKhoanThuSearchKeyword(e.target.value)}
+                />
+                <Select value={khoanThuFilter} onValueChange={setKhoanThuFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn khoản thu" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    <SelectItem value="all">Tất cả khoản thu</SelectItem>
+                    {filteredKhoanThuList.map((kt) => (
+                      <SelectItem key={kt.id} value={kt.id.toString()}>
+                        {kt.tenKhoanThu} ({kt.loaiKhoanThu === 0 ? "Bắt buộc" : "Tự nguyện"})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -433,32 +473,36 @@ export default function NopTienPage() {
                     </TableCell>
                     <TableCell>{nt.nguoiNop}</TableCell>
                     <TableCell>{formatDateTime(nt.ngayNop)}</TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleView(nt)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      {isStaff() && (
-                        <>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEdit(nt)}
-                          >
-                            <Edit className="h-4 w-4" />
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Mở menu</span>
                           </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDelete(nt.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </>
-                      )}
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleView(nt)}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            Xem chi tiết
+                          </DropdownMenuItem>
+                          {isStaff() && (
+                            <>
+                              <DropdownMenuItem onClick={() => handleEdit(nt)}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Chỉnh sửa
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDelete(nt.id)}
+                                className="text-red-600 focus:text-red-600"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Xóa
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))

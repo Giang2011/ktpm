@@ -88,6 +88,22 @@ CREATE TABLE audit_logs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 8. Bảng Tạm Trú Tạm Vắng (TamTruTamVang): Quản lý tạm trú/tạm vắng
+CREATE TABLE tam_tru_tam_vang (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nhan_khau_id BIGINT NOT NULL,
+    loai_tam_tru INT NOT NULL, -- 0: Tạm trú, 1: Tạm vắng
+    dia_chi VARCHAR(255), -- Địa chỉ (chỉ bắt buộc khi tạm trú)
+    so_dien_thoai VARCHAR(15) NOT NULL,
+    ngay_bat_dau DATE NOT NULL,
+    ngay_ket_thuc DATE NOT NULL,
+    ly_do TEXT NOT NULL,
+    FOREIGN KEY (nhan_khau_id) REFERENCES nhan_khau(id) ON DELETE CASCADE
+);
+
+insert into users(username,password,role) values('giang','12345678','ADMIN');
+insert into users(username,password,role) values('bopc','12345678','STAFF');
+
 -- Insert dữ liệu mẫu (Seeding data) để bạn test API
 -- INSERT INTO users (username, password, role) VALUES 
 -- ('admin', '123456', 'ADMIN'); -- Lưu ý: Khi làm thật password phải hash

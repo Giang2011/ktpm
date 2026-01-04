@@ -1,33 +1,29 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Geist, Geist_Mono } from "next/font/google" // Dùng font Geist như bạn đã chọn
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { AuthProvider } from "@/lib/auth-context"
+import { Toaster } from "@/components/ui/sonner"
+// 1. Import ThemeProvider
+import { ThemeProvider } from "@/components/theme-provider"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+})
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+})
 
 export const metadata: Metadata = {
   title: "BlueMoon - Quản lý chung cư",
   description: "Hệ thống quản lý chung cư BlueMoon",
-  generator: "v0.app",
   icons: {
-    icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
-    apple: "/apple-icon.png",
+    icon: "/real_estate.jpg",
+    apple: "/real_estate.jpg",
   },
 }
 
@@ -37,9 +33,22 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="vi">
-      <body className={`font-sans antialiased`}>
-        <AuthProvider>{children}</AuthProvider>
+    <html lang="vi" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground font-sans`}
+      >
+        {/* 2. Bao bọc ứng dụng bằng ThemeProvider */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

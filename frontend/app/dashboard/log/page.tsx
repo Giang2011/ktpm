@@ -155,7 +155,7 @@ export default function LogPage() {
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Nhật ký hoạt động</h1>
+          <h1 className="text-3xl font-bold">NHẬT KÝ HOẠT ĐỘNG</h1>
           <p className="text-muted-foreground">
             Theo dõi các thay đổi trong hệ thống
           </p>
