@@ -80,6 +80,10 @@ export default function NopTienPage() {
   const [khoanThuFilter, setKhoanThuFilter] = useState<string>("all");
   const [startDateFilter, setStartDateFilter] = useState("");
   const [endDateFilter, setEndDateFilter] = useState("");
+  
+  // Thêm state cho search trong dropdowns
+  const [hoKhauSearchKeyword, setHoKhauSearchKeyword] = useState("");
+  const [khoanThuSearchKeyword, setKhoanThuSearchKeyword] = useState("");
 
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -177,6 +181,22 @@ export default function NopTienPage() {
       nt.nguoiNop.toLowerCase().includes(keyword) ||
       (nt.ghiChu && nt.ghiChu.toLowerCase().includes(keyword))
     );
+  });
+  
+  // Thêm filtered lists cho dropdowns
+  const filteredHoKhauList = hoKhauList.filter((hk) => {
+    if (!hoKhauSearchKeyword) return true;
+    const keyword = hoKhauSearchKeyword.toLowerCase();
+    return (
+      hk.tenChuHo.toLowerCase().includes(keyword) ||
+      hk.diaChi.toLowerCase().includes(keyword)
+    );
+  });
+  
+  const filteredKhoanThuList = khoanThuList.filter((kt) => {
+    if (!khoanThuSearchKeyword) return true;
+    const keyword = khoanThuSearchKeyword.toLowerCase();
+    return kt.tenKhoanThu.toLowerCase().includes(keyword);
   });
 
   const handleAdd = () => {
@@ -339,36 +359,50 @@ export default function NopTienPage() {
 
             <div className="space-y-2">
               <Label>Hộ khẩu</Label>
-              <Select value={hoKhauFilter} onValueChange={setHoKhauFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Chọn hộ khẩu" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tất cả hộ khẩu</SelectItem>
-                  {hoKhauList.map((hk) => (
-                    <SelectItem key={hk.id} value={hk.id.toString()}>
-                      {hk.tenChuHo} - {hk.diaChi}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <Input
+                  placeholder="Tìm kiếm hộ khẩu..."
+                  value={hoKhauSearchKeyword}
+                  onChange={(e) => setHoKhauSearchKeyword(e.target.value)}
+                />
+                <Select value={hoKhauFilter} onValueChange={setHoKhauFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn hộ khẩu" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    <SelectItem value="all">Tất cả hộ khẩu</SelectItem>
+                    {filteredHoKhauList.map((hk) => (
+                      <SelectItem key={hk.id} value={hk.id.toString()}>
+                        {hk.tenChuHo} - {hk.diaChi}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-2">
               <Label>Khoản thu</Label>
-              <Select value={khoanThuFilter} onValueChange={setKhoanThuFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Chọn khoản thu" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tất cả khoản thu</SelectItem>
-                  {khoanThuList.map((kt) => (
-                    <SelectItem key={kt.id} value={kt.id.toString()}>
-                      {kt.tenKhoanThu} ({kt.loaiKhoanThu === 0 ? "Bắt buộc" : "Tự nguyện"})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <Input
+                  placeholder="Tìm kiếm khoản thu..."
+                  value={khoanThuSearchKeyword}
+                  onChange={(e) => setKhoanThuSearchKeyword(e.target.value)}
+                />
+                <Select value={khoanThuFilter} onValueChange={setKhoanThuFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn khoản thu" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    <SelectItem value="all">Tất cả khoản thu</SelectItem>
+                    {filteredKhoanThuList.map((kt) => (
+                      <SelectItem key={kt.id} value={kt.id.toString()}>
+                        {kt.tenKhoanThu} ({kt.loaiKhoanThu === 0 ? "Bắt buộc" : "Tự nguyện"})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-2">

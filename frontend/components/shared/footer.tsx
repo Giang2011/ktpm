@@ -24,6 +24,7 @@ export function Footer() {
                         <Link href="/dashboard/nhan-khau" className="hover:text-primary transition-colors">Nhân Khẩu</Link>
                         <Link href="/dashboard/khoan-thu" className="hover:text-primary transition-colors">Khoản Thu</Link>
                         <Link href="/dashboard/nop-tien" className="hover:text-primary transition-colors">Nộp Tiền</Link>
+                        <Link href="/dashboard/tam-tru-tam-vang" className="hover:text-primary transition-colors">Tạm Trú Tạm Vắng</Link>
                         <Link href="/dashboard/log" className="hover:text-primary transition-colors">Nhật Ký</Link>
                     </div>
 

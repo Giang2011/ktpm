@@ -2,7 +2,7 @@
 
 import type React from "react"
 import Image from "next/image"
-import { Users, UserCircle, Receipt, Wallet, FileText, LogOut, Building2 } from "lucide-react"
+import { Users, UserCircle, Receipt, Wallet, FileText, LogOut, Building2, MapPin } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
@@ -26,6 +26,7 @@ const ROUTE_NAMES: Record<string, string> = {
   "nhan-khau": "Quản Lý Nhân Khẩu",
   "khoan-thu": "Quản Lý Khoản Thu",
   "nop-tien": "Nộp Tiền",
+  "tam-tru-tam-vang": "Tạm Trú Tạm Vắng",
   "log": "Nhật Ký Hệ Thống",
   "create": "Thêm Mới",
   "edit": "Chỉnh Sửa"
@@ -65,6 +66,7 @@ export default function DashboardLayout({
     { name: "Nhân Khẩu", href: "/dashboard/nhan-khau", icon: UserCircle },
     { name: "Khoản Thu", href: "/dashboard/khoan-thu", icon: Receipt },
     { name: "Nộp Tiền", href: "/dashboard/nop-tien", icon: Wallet },
+    { name: "Tạm Trú Tạm Vắng", href: "/dashboard/tam-tru-tam-vang", icon: MapPin },
     { name: "Nhật Ký", href: "/dashboard/log", icon: FileText },
   ]
 
